@@ -10,13 +10,13 @@ parser.add_argument('--image_folder', type=str, help='The path of the folder whe
 
 def send_one_request(image_path):
     # Define http payload, "file" is the key of the http payload
-    file = {"file": open(image_path, 'rb')}
+    file = {'file': open(image_path, 'rb')}
     r = requests.post(url, files=file)
     # Print error message if failed
     if r.status_code != 200:
         print('sendErr: ' + r.url)
     else:
-        image_msg = image_path.split('/')[1] + ' uploaded!'
+        image_msg = image_path.split('/')[2] + ' uploaded!'
         msg = image_msg + '\n' + 'Classification result: ' + r.text
         print(msg)
 

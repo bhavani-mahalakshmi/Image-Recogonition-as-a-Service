@@ -9,7 +9,7 @@ parser.add_argument('--image_folder', type=str, help='The path of the folder whe
 
 def send_one_request(url, image_path):
     # Define http payload, "file" is the key of the http payload
-    file = {"file": open(image_path, 'rb')}
+    file = {'file': open(image_path, 'rb')}
     r = requests.post(url, files=file)
     # Print error message if failed
     if r.status_code != 200:
