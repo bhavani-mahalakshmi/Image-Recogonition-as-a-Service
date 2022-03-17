@@ -1,9 +1,9 @@
 import os
-import boto3
-import base64
 import uuid
 import json
-from flask import Flask, render_template, request, jsonify
+import boto3
+import base64
+from flask import (Flask, render_template, request)
 
 app = Flask(__name__)
 
@@ -27,8 +27,10 @@ def process():
     """
     Process an uploaded image by pushing it in a base64-encoded
     format along with a unique identifier into request queue
-    and return the classification of the image from the response
-    queue.
+    and return a response containing the classification of the 
+    image from the response queue.
+
+    :return: (str) The classification of the image.
     """
     try:
         uploaded_file = request.files.get('file')
@@ -43,10 +45,9 @@ def process():
             # Send message to SQS queue.
             sqs.send_message(
                 QueueUrl=request_queue_url,
-                MessageBody=json.dumps(sqs_message_body),
-                MessageGroupId=identifier
+                MessageBody=json.dumps(sqs_message_body)
             )
-        print('Uploaded file to SQS Request Queue!')
+        print('Uploaded file to the request queue!')
         # Poll the response queue to get the classfication of the image.
         while True:
             sqs_output = sqs.receive_message(
@@ -63,9 +64,10 @@ def process():
                         QueueUrl=response_queue_url,
                         ReceiptHandle=item.get('ReceiptHandle')
                     )
-                    return jsonify(msg_body.get('classification'))
+                    return msg_body.get('classification')
     except Exception as e:
         print('Error occurred: {}'.format(e))
+        return ''
 
 if __name__ == '__main__':
     app.run(

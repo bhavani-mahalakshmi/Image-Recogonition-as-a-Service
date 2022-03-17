@@ -1,7 +1,7 @@
-import requests
 import os
-import argparse
 import time
+import requests
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 
 correct_map = {
@@ -109,50 +109,49 @@ correct_map = {
 
 parser = argparse.ArgumentParser(description='Upload images')
 parser.add_argument('--num_request', type=int, help='one image per request')
-parser.add_argument('--url', type=str, help='URL to the backend server, e.g. http://3.86.108.221/xxxx.php')
+parser.add_argument('--url', type=str, help='URL of the backend server, e.g. http://3.86.108.221/xxxx.php')
 parser.add_argument('--image_folder', type=str, help='the path of the folder where images are saved on your local machine')
-
 
 # These are global variables
 correct_count = 0
 received_count = 0
 wrong_dict = {}
 
+args = parser.parse_args()
+url = args.url
 
 def send_one_request(image_path):
     # To check the correctness of the result, it will modify the following variables
     global correct_count, received_count, wrong_dict
 
     # Define http payload, "file" is the key of the http payload
-    file = {'file': open(image_path,'rb')} 
+    file = {'file': open(image_path, 'rb')} 
     r = requests.post(url, files=file)
 
     if r.status_code != 200:
         print('sendErr: ' + r.url)
-    else :
-        print('\n' + r.text)
-        line = r.text
-        # Each line is like this format: (test_00.jpg,Paul)
-        # The following part is to parse the line, and check the correctness
-        if '(' in line:
-            line = line.replace('.jpg', '')
-            line = line.strip()
-            line = line.strip('()')
-            line = line.split(',')
-            image_name = line[0]
-            correct_result = (correct_map[image_name])
-            output = line[1].strip()
-            if correct_result == output:
-                correct_count += 1
-            else:
-                wrong_dict[image_name] = output
-            received_count += 1
-        
-args = parser.parse_args()
-url = args.url
+    else:
+        # The document requirement says that:
+        # For example, the user uploads an image named “test_00.jpg”.
+        # For the above request, the output should be “Paul” in plain text. 
+        # So image_path shoud be "XXX/test_00.jpg", and r.text shoud be "Paul"
+        image_name = image_path.strip().split('/')[-1] # "test_00.jpg"
+        image_name_key = image_name.replace('.jpg', '') # "test_00"
+        output = r.text # "Paul"
+        output = output.strip()
+        print(f'\n{image_name} uploaded!')
+        print(f'\nClassification result: {output}')
+
+        correct_result = (correct_map[image_name_key])
+        if correct_result == output:
+            correct_count += 1
+        else:
+            wrong_dict[image_name] = output
+        received_count += 1
+
+start_time = time.time()
 num_request = args.num_request
 image_folder = args.image_folder
-start_time = time.time()
 num_max_workers = 100
 image_path_list = list()
 
@@ -165,18 +164,18 @@ with ThreadPoolExecutor(max_workers=num_max_workers) as executor:
     executor.map(send_one_request, image_path_list)
 
 while 1:
-   print(".")
+   print('.')
    time.sleep(1)
    
-   end_time = (time.time()-start_time)
+   end_time = (time.time() - start_time)
    if received_count == num_request or end_time > 600:
-       print(f"Total time: {end_time}s")
+       print(f'Total time: {end_time}s')
        
        if correct_count == num_request:
-           print(f"{num_request} requests are sent. {correct_count} responses are correct.")
+           print(f'{num_request} requests are sent. {correct_count} responses are correct.')
        else:
-           print(f"{num_request} requests are sent. {correct_count} responses are correct.")
-           print(f"Following results are wrong:")
+           print(f'{num_request} requests are sent. {correct_count} responses are correct.')
+           print(f'Following results are wrong:')
            for k, v in wrong_dict.items():
-               print(f"{k}: {v}")
+               print(f'{k}: {v}')
        break
