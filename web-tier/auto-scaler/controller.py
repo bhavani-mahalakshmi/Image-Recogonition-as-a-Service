@@ -1,3 +1,4 @@
+import math
 import time
 import boto3
 import ec2_manager as ec2_instance_manager
@@ -18,7 +19,7 @@ def auto_scale_out_instances():
     queue_length = int(client.get_queue_attributes(
         QueueUrl=REQUEST_QUEUE_URL,
         AttributeNames=['ApproximateNumberOfMessages']
-        ).get("Attributes").get("ApproximateNumberOfMessages"))
+        ).get('Attributes').get('ApproximateNumberOfMessages'))
 
     print('Request queue length: ', queue_length)
     running_instances = ec2_instance_manager.get_running_instances()
@@ -30,21 +31,15 @@ def auto_scale_out_instances():
     if queue_length == 0:
         pass  # Scaling down is handled in app-tier code.
 
-    elif 1 <= queue_length <= 5:
-        if len(running_instances) == 0:
-            if len(stopped_instances) >= 1:
-                ec2_instance_manager.start_instance(stopped_instances[0])
-            else:
-                ec2_instance_manager.create_instance()
-
-    elif 5 < queue_length <= 50:
-        if len(running_instances) < 10:
-            needed_instances = 10 - length_of_running
+    elif 1 <= queue_length <= 50:
+        needed_instances = math.ceil(queue_length / 5)
+        if len(running_instances) < needed_instances:
+            needed_instances -= length_of_running
             if length_of_stopped >= needed_instances:
                 ec2_instance_manager.bulk_start_instances(stopped_instances[:needed_instances])
             else:
                 ec2_instance_manager.bulk_start_instances(stopped_instances)
-                for _ in range(needed_instances-length_of_stopped):
+                for _ in range(needed_instances - length_of_stopped):
                     ec2_instance_manager.create_instance()
 
     else:
@@ -54,7 +49,7 @@ def auto_scale_out_instances():
                 ec2_instance_manager.bulk_start_instances(stopped_instances[:needed_instances])
             else:
                 ec2_instance_manager.bulk_start_instances(stopped_instances)
-                for _ in range(needed_instances-length_of_stopped):
+                for _ in range(needed_instances - length_of_stopped):
                     ec2_instance_manager.create_instance()
 
 if __name__ == '__main__':
