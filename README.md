@@ -16,14 +16,14 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Frameworks/Tools Used</a></li>
+        <li><a href="#frameworks-and-tools-used">Frameworks And Tools Used</a></li>
       </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
     </li>
     <li><a href="#license">License</a></li>
-    <li><a href="#acknowledgments">References</a></li>
+    <li><a href="#references">References</a></li>
   </ol>
 </details>
 
@@ -41,9 +41,9 @@ High level overview:
 
 The web-tier also comprises an auto-scaling controller service that utilizes the length of input SQS queue to scale out automatically whereas the logic to scale in is handled in the app-tier.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">go to top</a>)</p>
 
-### Frameworks/Tools Used
+### Frameworks And Tools Used
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
@@ -51,7 +51,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
 * [Flask](https://flask.palletsprojects.com/en/2.0.x/)
 * [Boto3](https://aws.amazon.com/sdk-for-python/)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">go to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -87,14 +87,14 @@ Then run the main.py file using
 python3 main.py
 ```
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">go to top</a>)</p>
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.md` for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">go to top</a>)</p>
 
 <!-- REFERENCES -->
 ## References
@@ -103,4 +103,4 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 * [AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 * [Web Development with Flask](https://flask.palletsprojects.com/en/2.0.x/)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">go to top</a>)</p>
