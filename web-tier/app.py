@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 sqs = boto3.client('sqs', region_name='us-east-1')
 
-request_queue_url = 'https://sqs.us-east-1.amazonaws.com/051675418934/Input-Image-Queue.fifo'
-response_queue_url = 'https://sqs.us-east-1.amazonaws.com/051675418934/Output-Image-Queue.fifo'
+request_queue_url = 'https://sqs.us-east-1.amazonaws.com/051675418934/Request-Queue'
+response_queue_url = 'https://sqs.us-east-1.amazonaws.com/051675418934/Response-Queue'
 
 @app.route('/health-check')
 def health_check():
@@ -68,6 +68,13 @@ def process():
     except Exception as e:
         print('Error occurred: {}'.format(e))
         return ''
+
+@app.route('/results')
+def results():
+    """Get the results in a tabular format."""
+    my_result = dict()
+    for 
+    return render_template('results.html', results=my_result)
 
 if __name__ == '__main__':
     app.run(
