@@ -30,37 +30,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-**Group Members:**
-
-
-Panemangalore Srikanth Kini
-
-
-Arindam Jain
-
-
-Bhavani Mahalakshmi Gowri Sankar
-
-
-
-**Web Tier URL:**
-http://52.91.101.27:8080/
-
-**SQS Queue Names:**
-
-
-Input Queue = Request-Queue
-
-
-Output Queue = Response-Queue
-
-**S3 Bucket Names:**
-
-
-INPUT_BUCKET = input-image-files
-
-
-OUTPUT_BUCKET = output-image-files
 
 This is the project for the course CSE 546 - Cloud Computing. It consists of a three-tier architecture (web-tier, 
 app-tier and the data-tier) which uses AWS resources to elastically scale in and out proportionally with respect to the load.
