@@ -3,11 +3,12 @@ import uuid
 import json
 import boto3
 import base64
-from flask import (Flask, render_template, request)
+from flask import (Flask, render_template, request, redirect, url_for)
 
 app = Flask(__name__)
 
 sqs = boto3.client('sqs', region_name='us-east-1')
+s3 = boto3.resource('s3', region_name='us-east-1')
 
 request_queue_url = 'https://sqs.us-east-1.amazonaws.com/051675418934/Request-Queue'
 response_queue_url = 'https://sqs.us-east-1.amazonaws.com/051675418934/Response-Queue'
@@ -23,6 +24,11 @@ def home():
     return render_template('index.html')
 
 @app.route('/', methods=['POST'])
+def get_result():
+    """Display the results in tabular format."""
+    return redirect(url_for('results'))
+
+@app.route('/process', methods=['POST'])
 def process():
     """
     Process an uploaded image by pushing it in a base64-encoded
@@ -73,7 +79,8 @@ def process():
 def results():
     """Get the results in a tabular format."""
     my_result = dict()
-    for 
+    for obj in s3.Bucket('output_image_bucket').objects.all():
+        my_result[obj.key] = obj.get()['Body'].read().decode('utf-8')
     return render_template('results.html', results=my_result)
 
 if __name__ == '__main__':
